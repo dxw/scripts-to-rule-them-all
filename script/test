@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# script/test: Run the test suite for the application.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -n "$DEBUG" ]; then
+  set -x
+fi
+
+echo "==> Updating..."
+script/update
+
+echo "==> Formatting files..."
+npm run-script lint:format:fix
+
+echo "==> Running ShellCheck..."
+shellcheck -- script/* */script/*

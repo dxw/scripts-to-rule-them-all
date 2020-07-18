@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# script/server: Launch the application and any extra required processes
+#                locally.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "==> Updating..."
+script/update
+
+ENVIRONMENT=$1
+
+if [ -n "$ENVIRONMENT" ]; then
+  case "$ENVIRONMENT" in
+    *)
+      echo "Unknown environment '$ENVIRONMENT'"
+      exit 1
+      ;;
+  esac
+else
+  echo "==> Building for a production environment..."
+  echo "No build instructions configured!"
+  exit 1
+fi

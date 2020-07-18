@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "lint:format": "prettier --check '**/*.md'",
+    "lint:format:fix": "prettier --write '**/*.md'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "^2.0.5"
+  }
+}
