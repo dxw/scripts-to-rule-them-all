@@ -1,0 +1,18 @@
+on:
+  - push
+  - pull_request
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update Homebrew
+        run: brew update
+
+      - name: Perform setup
+        run: script/setup
+
+      - name: Run tests
+        run: script/test
