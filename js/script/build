@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# script/server: Launch the application and any extra required processes
+#                locally.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "==> Updating..."
+script/update
+
+ENVIRONMENT=$1
+
+if [ -n "$ENVIRONMENT" ]; then
+  case "$ENVIRONMENT" in
+    dev | development)
+      echo "==> Building for a development environment..."
+      NODE_ENV=development npm run-script build
+      ;;
+    prod | production)
+      echo "==> Building for a production environment..."
+      NODE_ENV=production npm run-script build
+      ;;
+    *)
+      echo "Unknown environment '$ENVIRONMENT'"
+      exit 1
+      ;;
+  esac
+else
+  echo "==> Building for a production environment..."
+  NODE_ENV=production npm run-script build
+fi

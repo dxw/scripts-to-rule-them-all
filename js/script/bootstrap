@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# script/bootstrap: Resolve all dependencies that the application requires to
+#                   run.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [ -f .gitmodules ]; then
+  echo "==> Updating Git submodules..."
+  git submodule update --init
+fi
+
+if [ -z "$CI" ]; then
+  if [ -f Brewfile ] && [ "$(uname -s)" = "Darwin" ]; then
+    if ! brew bundle check >/dev/null 2>&1; then
+      echo "==> Installing Homebrew dependencies..."
+      brew bundle install --verbose
+    fi
+  fi
+
+  if [ -f .node-version ]; then
+    eval "$(nodenv init -)"
+
+    if [ -z "$(nodenv version-name 2>/dev/null)" ]; then
+      echo "==> Installing Node..."
+      nodenv install --skip-existing
+      nodenv rehash
+    fi
+  fi
+fi
+
+if ! npm list >/dev/null 2>&1 || ! npm list --dev >/dev/null 2>&1; then
+  echo "==> Installing JS dependencies..."
+  npm install
+fi
