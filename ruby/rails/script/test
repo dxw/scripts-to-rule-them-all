@@ -20,6 +20,14 @@ if [ -n "$TEST_FILE" ]; then
   echo "==> Running the tests matching '$TEST_FILE'..."
   bundle exec rspec --pattern "$TEST_FILE"
 else
+  if [ -n "$CI" ]; then
+    echo "==> Checking formatting..."
+    yarn run lint:format
+  else
+    echo "==> Formatting files..."
+    yarn run lint:format:fix
+  fi
+
   echo "==> Running ShellCheck..."
   shellcheck script/*
 
@@ -29,6 +37,14 @@ else
   else
     echo "==> Linting Ruby in fix mode..."
     bundle exec standardrb --fix
+  fi
+
+  if [ -n "$CI" ]; then
+    echo "==> Linting JS..."
+    yarn run lint:js
+  else
+    echo "==> Linting JS in fix mode..."
+    yarn run lint:js:fix
   fi
 
   echo "==> Running the tests..."
